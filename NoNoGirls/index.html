@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No No Girls Ranker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #F752BA; /* Changed to #F752BA */
+            margin: 0;
+        }
+
+        h3 {
+            color: #F752BA; /* Changed to #F752BA */
+            margin: 5px 0 20px 0;
+        }
+
+        .ranking-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .rank {
+            width: 80px;
+            height: 80px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rank img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover; /* Ensures image fills the circle perfectly */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .contestant-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 250px;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            padding: 10px;
+            position: absolute;
+            left: 10px;
+            top: 110px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #ddd;
+            height: 70px;
+            width: 100%;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            object-fit: cover;
+        }
+
+        .dropdown-item strong {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ranking-container">
+        <h2>No No Girls Ranker</h2>
+        <h3>MAKE YOUR OWN TOP 9</h3>
+        <div class="contestant-list" id="dropdownMenu">
+            <!-- Dropdown items will be dynamically generated here -->
+        </div>
+        <div class="pyramid">
+            <div class="row">
+                <div class="rank" id="rank1"></div>
+            </div>
+            <div class="row">
+                <div class="rank" id="rank2"></div>
+                <div class="rank" id="rank3"></div>
+            </div>
+            <div class="row">
+                <div class="rank" id="rank4"></div>
+                <div class="rank" id="rank5"></div>
+                <div class="rank" id="rank6"></div>
+            </div>
+            <div class="row">
+                <div class="rank" style="margin-right: 50px;" id="rank7"></div>
+                <div class="rank" id="rank8"></div>
+                <div class="rank" style="margin-left: 50px;" id="rank9"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let nextRank = 1; // Keep track of the next rank to fill
+
+        const contestants = {
+            'Aika Mbingila': { img: 'https://i.imgur.com/V73Ydfj.png' },
+            'Aiko': { img: 'https://i.imgur.com/ZxQhrus.png' },
+            'Akari': { img: 'https://i.imgur.com/NWiXc5E.png' },
+            'Ami': { img: 'https://i.imgur.com/HPwCIV9.png' },
+            'Asha': { img: 'https://i.imgur.com/497WApG.png' },
+            'Ayami': { img: 'https://i.imgur.com/GAu8PEU.png' },
+            'Chika': { img: 'https://i.imgur.com/UeXcpk8.png' }, // Chika's image added here
+            'Fuka': { img: 'https://i.imgur.com/VSo3sUj.png' },
+            'Fumino': { img: 'https://i.imgur.com/6XsO56y.png' },
+            'Hibiki': { img: 'https://i.imgur.com/KMvR8xk.png' },
+            'Jewel': { img: 'https://i.imgur.com/KesWihs.png' },
+            'Jisoo': { img: 'https://i.imgur.com/agrzOic.png' },
+            'Kaede': { img: 'https://i.imgur.com/5Y6c35G.png' },
+            'Kai': { img: 'https://i.imgur.com/ddaNR0h.png' },
+            'Koharu': { img: 'https://i.imgur.com/mM9X2U3.png' },
+            'Koko': { img: 'https://i.imgur.com/kUt5O7U.png' },
+            'Kokoa': { img: 'https://i.imgur.com/yw5Lzjf.png' },
+            'Kokona': { img: 'https://i.imgur.com/4UdUNf2.png' },
+            'Mahina': { img: 'https://i.imgur.com/jN8v3DB.png' },
+            'Momo': { img: 'https://i.imgur.com/r4PPBDq.png' },
+            'Momoka': { img: 'https://i.imgur.com/hG6Esjy.png' },
+            'Naoko': { img: 'https://i.imgur.com/wwwZ0Em.png' },
+            'Rei': { img: 'https://i.imgur.com/7xL9oIq.png' },
+            'Ringo': { img: 'https://i.imgur.com/y6fPusc.png' },
+            'Sara': { img: 'https://i.imgur.com/uYVuhP2.png' },
+            'Sayaka': { img: 'https://i.imgur.com/9JhSsBa.png' },
+            'Stella': { img: 'https://i.imgur.com/qA07bRd.png' },
+            'Yukino': { img: 'https://i.imgur.com/hl9OYzv.png' },
+            'Yuri': { img: 'https://i.imgur.com/pl7RQOE.png' }
+        };
+
+        // Function to populate dropdown menu with all contestants
+        function populateDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.innerHTML = ''; // Clear existing items
+
+            for (const contestant in contestants) {
+                const item = document.createElement('div');
+                item.classList.add('dropdown-item');
+                item.innerHTML = `
+                    <img src="${contestants[contestant].img}" alt="${contestant}">
+                    <strong>${contestant}</strong>
+                `;
+
+                item.onclick = function () {
+                    selectContestant(contestant);
+                };
+                dropdownMenu.appendChild(item);
+            }
+        }
+
+        // Function to select a contestant and place them in the next available rank
+        function selectContestant(contestant) {
+            if (nextRank <= 9) { // Ensure rank is within limits
+                const rankDiv = document.getElementById(`rank${nextRank}`);
+                const contestantData = contestants[contestant];
+
+                rankDiv.innerHTML = `
+                    <img src="${contestantData.img}" alt="${contestant}">
+                `;
+                nextRank++;
+            }
+        }
+
+        // Populate dropdown on page load
+        populateDropdown();
+    </script>
+
+</body>
+</html>
